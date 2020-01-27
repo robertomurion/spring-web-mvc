@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<!--Import materialize.css-->
+<style type="text/css">
+body {
+	font-family: Arial, sans-serif;
+	background-color: #dddddd;
+	color: rgba(0, 0, 0, 1);
+}
+
+div#interface {
+	width: 1000px;
+	height: 500px; background-color : #ffffff;
+	margin: 10px auto 0px auto;
+	box-shadow: 0px 0px 10px back;
+	padding: 10px 10px 10px 10px;
+	background-color: #ffffff;
+}
+
+h3 {
+	font-size: 30pt;
+	color: #606060;
+	text-align: center;
+	text-shadow : 1px 1px 1px rgba( 0, 0, 0, .6);
+	padding: 0px;
+	margin-bottom: 0px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .6);
+}
+
+
+a {
+	position: absolute;
+	left: 550px;
+	top: 300px;
+	width: 90px;
+	background-color: #26A69A;
+	font-size: 25px;
+	text-align: center;
+	padding: 10px;
+	margin: 2px;
+	transition: background-color .7s;
+	color: white;
+	text-decoration: none;
+}
+
+div#botao a:hover{
+	background-color: #2CC3B5;
+}
+div#interface h5#instrucao{
+	font-size:25px;
+	margin-top:150px;	
+	margin-left: 400px;
+	
+}
+
+</style>
+</head>
+<body>
+	<div id="interface">
+		<h3>
+			Projeto criado em: <br /> Spring Boot<br /> + Thymeleaf <br />+
+			Material Design Lite
+		</h3>
+		<div id="botao">
+			<a href="/cadastropessoa">Login</a>
+		</div>
+		<h5 id="instrucao">usuario: admin<br/>senha: admin</h5>
+	</div>
+
+
+	<!--JavaScript at end of body for optimized loading-->
+</body>
+</html>
