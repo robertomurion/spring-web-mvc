@@ -29,12 +29,8 @@ public class Usuario implements UserDetails {
 	
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="usuarios_role", //cria tabela de acesso do usuario
-			joinColumns = @JoinColumn(name="usuario_id",
-			referencedColumnName = "id",
-			table="usuario"),
-			inverseJoinColumns = @JoinColumn(name="role_id",
-			referencedColumnName = "id",
-			table="role"))
+			joinColumns = @JoinColumn(name="usuario_id",referencedColumnName = "id",table="usuario"),
+			inverseJoinColumns = @JoinColumn(name="role_id",referencedColumnName = "id",table="role"))
 	
 	private List<Role> roles;
 
