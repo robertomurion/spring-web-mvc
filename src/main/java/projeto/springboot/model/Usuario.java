@@ -10,8 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-
+import javax.persistence.ManyToMany;
+import javax.persistence.UniqueConstraint;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,8 +27,9 @@ public class Usuario implements UserDetails {
 	private String login;
 	private String senha;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="usuarios_role", //cria tabela de acesso do usuario
+			uniqueConstraints = @UniqueConstraint(columnNames = { "usuario_id", "role_id" }, name = "unique_role_user"),
 			joinColumns = @JoinColumn(name="usuario_id",referencedColumnName = "id",table="usuario"),
 			inverseJoinColumns = @JoinColumn(name="role_id",referencedColumnName = "id",table="role"))
 	

@@ -12,6 +12,11 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
 	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 	crossorigin="anonymous"></script>
+<!-- Import materialize para fazer o calendario funcionar -->
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js"
+	type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css"
+	rel="stylesheet" type="text/css" />
 <!--Import materialize.css-->
 <link type="text/css" rel="stylesheet"
 	href="/materialize/css/materialize.css" media="screen,projection" />
@@ -33,6 +38,15 @@ table.striped>tbody>tr:nth-child(odd) {
 form input[type=submit] {
 	color: white;
 }
+
+table {
+	width: 100%;
+	border: 1px solid grey;
+}
+
+table th {
+	background: #eee;
+}
 </style>
 
 </head>
@@ -47,7 +61,8 @@ form input[type=submit] {
 		<legend>Dados cadastrais</legend>
 		<div class="row">
 			<form action="salvarpessoa" method="post" id="formpessoa"
-				th:object="${pessoaObj}" class="col s12">
+				th:object="${pessoaObj}" class="col s12"
+				enctype="multipart/form-data">
 				<input type="hidden" name="id" th:field="*{id}" readonly="readonly">
 				<div class="row" sec:authorize="hasRole('ROLE_ADMIN')">
 					<div class="input-field col s6">
@@ -68,13 +83,32 @@ form input[type=submit] {
 						</select>
 					</div>
 					<div class="input-field col s6">
-						<label for="profissao" class="active">Profissão:</label>
-						<select  class="browser-default" id="profissao" th:field="*{profissao}">
+						<label for="dataNascimento" class="active">Data
+							Nascimento:</label> <input type="date" id="dataNascimento"
+							name="dataNascimento" th:field="*{dataNascimento}">
+					</div>
+					<div class="input-field col s6">
+						<label for="profissao" class="active">Profissão:</label> <select
+							class="browser-default" id="profissao" th:field="*{profissao}">
 							<option th:each="p : ${profissoes}" th:value="${p.id}"
-							th:text="${p.nomeProfissao}"></option>
-							
+								th:text="${p.nomeProfissao}"></option>
 						</select>
 					</div>
+
+					<div class="input-field col s6">
+						<label for="cargo" class="active">Cargo:</label> <select
+							class="browser-default" id="cargo" th:field="*{cargo}">
+							<option
+								th:each="c : ${T(projeto.springboot.model.Cargo).values()}"
+								th:value="${c}" th:text="${c.nomeCargo}"></option>
+						</select>
+					</div>
+
+					<div class="input-field col s6">
+						<label for="file" class="active">Arquivo:</label> <input
+							type="file" id="file" name="file" class="file-field input-field">
+					</div>
+
 					<div class="input-field col s6">
 						<label for="cep" class="active">CEP:</label><input
 							class="validate" name="cep" id="cep" th:field="*{cep}"
@@ -121,23 +155,21 @@ form input[type=submit] {
 					<div class="input-field col s6">
 						<label for="nomepesquisa" class="active">Pesquisa por
 							nome:</label> <input class="validate" name="nomepesquisa"
-							id="nomepesquisa" type="text">
+							id="nomepesquisa" type="text" th:value="${nomepesquisa}">
 					</div>
 					<div class="input-field col s6">
 						<label for="pesqsexo" class="active">Pesquisa por sexo:</label> <select
 							class="browser-default" name="pesqsexo" id="pesqsexo">
 							<option value="">---[Selecione]---</option>
-							<option value="M">Masculino</option>
-							<option value="F">Feminino</option>
+							<option th:selected="${pesqsexo=='M'}" value="M">Masculino</option>
+							<option th:selected="${pesqsexo=='F'}" value="F">Feminino</option>
 						</select>
 
 					</div>
 				</div>
-				<input class="waves-effect waves-light btn" type="submit"
-					value="Buscar"> <a class="waves-effect waves-light btn"
-					href="/listapessoas">Listar Clientes</a> <input
-					class="waves-effect waves-light btn" type="submit"
-					value="Gerar Relatorio" onclick="mudarMetodo()" />
+				<input class="waves-effect waves-light btn" type="submit" value="Buscar" onclick="document.getElementById('pesquisarpessoa').method = 'post' ">
+				<a class="waves-effect waves-light btn" href="/listapessoas">Listar Clientes</a>
+				<input class="waves-effect waves-light btn" type="submit" value="Gerar Relatorio" onclick="mudarMetodo()" />
 			</form>
 		</div>
 	</fieldset>
@@ -149,16 +181,20 @@ form input[type=submit] {
 					<th>ID</th>
 					<th>Nome</th>
 					<th>Sobrenome</th>
+					<th>Arquivo</th>
 					<th>Editar</th>
 					<th>Excluir</th>
 				</tr>
 			</thead>
-			<tr th:each="pessoa : ${pessoas}">
+			<tr th:each="pessoa : ${pessoas.content}">
 				<td th:text="${pessoa.id}"></td>
 				<td><a
-					th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"><span
+					th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"> <span
 						th:text="${pessoa.nome}"></span></a></td>
 				<td th:text="${pessoa.sobrenome}"></td>
+				<td><a th:if="${pessoa.arquivo != null}"
+					th:href="@{/baixararquivo/{idpessoa}(idpessoa=${pessoa.id})}">Baixar</a>
+					<a th:if="${pessoa.arquivo == null}">Sem Arquivo</a></td>
 				<td><a
 					th:href="@{/editarpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Editar</a></td>
 				<td><a
@@ -166,6 +202,24 @@ form input[type=submit] {
 			</tr>
 		</table>
 	</fieldset>
+	<div class="row" style="margin-top: 30px;">
+		<div style="text-align: center;">
+			<span th:if="${pessoas.hasPrevious()}"> <a
+				th:href="@{pessoaspag(page=${pessoas.number - 1}, size=${pessoas.size}, nomepesquisa=${nomepesquisa}, pesqsexo = ${pesqsexo})}">&lt
+					&lt</a>
+			</span>
+			<th:block
+				th:each="i: ${#numbers.sequence(0, pessoas.totalPages - 1)}">
+				<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size}, nomepesquisa=${nomepesquisa}, pesqsexo = ${pesqsexo})}">[[${i}
+					+ 1]]</a>
+			</th:block>
+			<span th:if="${pessoas.hasNext()}"> <a
+				th:href="@{pessoaspag(page=${pessoas.number + 1}, size=${pessoas.size}, nomepesquisa=${nomepesquisa}, pesqsexo = ${pesqsexo})}">&gt
+					&gt</a>
+			</span>
+		</div>
+	</div>
+
 
 	<!--JavaScript at end of body for optimized loading-->
 	<script type="text/javascript" src="/materialize/js/materialize.min.js"></script>
@@ -175,6 +229,11 @@ form input[type=submit] {
 		$(document)
 				.ready(
 						function() {
+
+							$('#dataNascimento').datepicker({
+								showOthermonths : true,
+								format : 'yyyy-mm-dd'
+							});
 
 							function limpa_formulário_cep() {
 								// Limpa valores do formulário de cep.

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<!-- Adicionando JQuery -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+	crossorigin="anonymous"></script>
+<!--Import materialize.css-->
+<link type="text/css" rel="stylesheet"
+	href="/materialize/css/materialize.css" media="screen,projection" />
+<link type="text/css" rel="stylesheet"
+	href="/materialize/css/materialize.min.css" media="screen,projection" />
+<style type="text/css">
+
+form input[type=submit] {
+	color: white;
+}
+</style>
+
+</head>
+<body>
+	<h1>Acesso ao Sistema</h1>
+	<form th:action="@{/login}" method="post" class="col s12">
+		<div class="row">
+			<div class="input-fiel col s6">
+				<label>Login</label>
+				<input type="text" name="username">
+			</div>
+		</div>
+		<div class="row">
+			<div class="input-fiel col s6">
+				<label>Senha</label>
+				<input type="password" name="password">
+			</div>
+		</div>
+		<div class="row">
+			<input name="logar" type="submit" value="Logar" class="waves-effect waves-light btn"/>
+		</div>
+	</form>
+</body>
+</html>
